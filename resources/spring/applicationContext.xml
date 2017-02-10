@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd  
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+	<!-- auto register Processor -->
+	<context:annotation-config />
+	<context:component-scan base-package="com.netfinworks.bcss" />
+	
+	
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:/opt/pay/config/basis/bcss/bcss-config.properties</value>
+				<!-- <value>file:E:/repository/config/bcss/bcss-config.properties</value>
+				<value>file:E:/repository/config/bcss/LIANLIANPAY10401/app.properties
+				</value> -->
+			</list>
+		</property>
+	</bean>
+
+	<bean id="log4jInitialization"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass" value="org.springframework.util.Log4jConfigurer" />
+		<property name="targetMethod" value="initLogging" />
+		<property name="arguments">
+			<list>
+				<!-- <value>file:E:/repository/config/bcss/log4j/log4j-lianlianpay.xml</value> -->
+				<value>file:/opt/pay/config/basis/bcss/log4j/log4j-lianlianpay.xml</value>
+			</list>
+		</property>
+	</bean>
+
+
+	<!-- web服务 -->
+	<import resource="classpath:META-INF/spring/bcss-interface-ws-service.xml" />
+	<import resource="classpath:META-INF/spring/bcss-interface-service.xml" />
+	<!-- 业务逻辑 -->
+	<import resource="classpath:META-INF/spring/bcss-ext-bank-adapter.xml" />
+	<import resource="classpath:META-INF/spring/bcss-ext-bank-template.xml" />
+	<import resource="classpath:META-INF/spring/bcss-ext-bank-common.xml" />
+	<import resource="classpath:META-INF/spring/bcss-ext-remote-client.xml" />
+	
+	
+	<!-- UFS统一入款文件对账start -->
+   <bean id="ufsClient" class="com.netfinworks.ufs.client.UFSClient">
+      <property name="host" value="${ufs.host}" />
+      <property name="user" value="${ufs.username}" />
+      <property name="password" value="${ufs.pwd}" />
+      <property name="serverRoot" value="${ufs.serverRoot}" />
+	</bean>
+</beans>
